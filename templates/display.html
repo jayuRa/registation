@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="static/jquery-3.6.1.min.js"></script>
+    <style>
+        li.current a {
+            color: green;
+        }
+        #pagin li {
+            display: inline-block;
+        }
+        .topright {
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<center>
+    <h2>Display Table</h2>
+</center>
+<body>
+    <form method="get" action="/registration">
+        <input type="submit" name="registration" value="registration">
+    </form>
+    <form method="post" action="/searchresult">
+        <input type="text" class="topright" id="myInput" placeholder="Search.." name="search">
+    </form>
+    <br> 
+    <table id="table" border="5" width="100%">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>fname</th>
+                <th>lname</th>
+                <th>course</th>
+                <th>gender</th>
+                <th>phone</th>
+                <th>country</th>
+                <th>state</th>
+                <th>city</th>
+                <th>address</th>
+                <th>vehical</th>
+                <th>image</th>
+                <th>update</th>
+                <th>delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for i in result %}
+                <td>{{i.id}}</td>
+                <td>{{i.fname}}</td>
+                <td>{{i.lname}}</td>
+                <td>{{i.course}}</td>
+                <td>{{i.gender}}</td>
+                <td>{{i.phone}}</td>
+                <td>{{i.name}}</td>
+                <td>{{i.sname}}</td>
+                <td>{{i.cname}}</td>
+                <td>{{i.address}}</td>
+                <td>{{i.vehicle}}</td>
+                <td>
+                    <img src="{{i.image}}" width="100px" height="100px">
+                </td>
+                <td><a class="btn btn-warning" href="http://localhost:8000/update/{{i.id}}">Edit</a></td>
+
+                <td><a class="btn btnwarning" href="http://localhost:8000/delete/{{i.id}}">delete</a></td>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <ul class="pagination" id="pagin">
+
+    </ul>
+    <input type="hidden" id="page" value="{{resultLen}}"> 
+
+</body> 
+<script src="static/common.js"></script>
+</html>

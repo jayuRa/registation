@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html> 
+<head>   
+<title>  
+Registration Page  
+</title>  
+<script src="static/jquery-3.6.1.min.js"></script>
+<script type="text/javascript">
+  
+  
+
+/*   function validateform(){
+    var img=document.forms['myform']['image'];
+    var validExt=["jpeg","jpg","png"];
+      if(document.myform.firstname.value==""){
+        alert("please enter your fname");
+        document.myform.firstname.focus();
+        return false;
+      }
+      if(document.myform.lastname.value==""){
+        alert("please enter your lname");
+        document.myform.lastname.focus();
+        return false;
+      }
+      if(document.myform.course.value==""){
+        alert("Please provide your course!");
+        return false;
+      }
+      if(document.myform.gender.value==""){
+        alert("Please provide your gender!");
+        return false;
+      }
+      if(document.myform.phone.value==""){
+        alert("please enter your phone");
+        document.myform.phone.focus();
+        return false;
+      }      
+      if(img.value!=""){
+        var img_ext=img.value.substring(img.value.lastIndexOf('.')+1);
+        var result=validExt.includes(img_ext);
+        if(result==false)
+        {
+          alert("Selected files is not image...");
+          return false;
+        }
+        else
+        {
+          if(parseFloat(img.files[0].size/(1024*1024))>=3)
+          {
+            alert("File size must be smaller then 3 mb");
+            return false;
+          }
+        }
+      }
+      /*else
+      {
+        alert("no image selected ...");
+        return false;
+      }*/
+      
+</script>
+</head>  
+Registration Page
+<body bgcolor="Lightskyblue" >  
+<br>  
+<br>  
+<form name="myform" action="/submit" method="post" enctype="multipart/form-data" onsubmit="return validateform()" >
+  
+  
+<label> Firstname </label>         
+<input type="text" name="firstname" /> <br> <br>  
+  
+<label> Lastname: </label>         
+<input type="text" name="lastname" /> <br> <br>  
+  
+<label>   
+Course :  
+</label>   
+<select name="course" id="course" >  
+<option value="" name="defualt">default</option>
+<option value="BCA" name="bca">BCA</option>  
+<option value="BBA" name="BBA">BBA</option>  
+<option value="B.Tech" name="b.Tech">B.Tech</option>  
+<option value="MBA">MBA</option>  
+<option value="MCA">MCA</option>  
+<option value="M.Tech">M.Tech</option>  
+</select>  
+  
+<br>  
+<label>   
+  Gender :  
+  </label><br>  
+  <input type="radio" id="male" name="gender" value="male"/> Male <br>  
+  <input type="radio" id="female" name="gender" value="female"/> Female <br>  
+  <br>     
+<br>  
+  
+<label>   
+Phone :  
+</label>     
+<input type="tel" name="phone" maxlength="10" /> <br> <br>  
+<label>
+country :
+</label>
+<select name="country" id="country" > 
+<option value="" >select country</option>
+{% for i in count %}
+<option value="{{i.id}}">{{i.name}}</option>
+{% endfor %}  
+
+</select>
+<br><br>
+
+<label>
+state :
+</label>
+<select name="state" id="state" > 
+<option value="" name="">default</option>
+
+</select>
+<br><br>
+
+<label>
+city :
+</label>
+<select name="city" id="city" >
+<option value="" name="">default</option>
+
+</select>
+<br><br>
+
+Address 
+
+<textarea name="address" value="address"></textarea> 
+<br>  
+  
+
+
+<br><br>  
+Which vehicle you own:
+    <br>
+    <input type="checkbox" name="vehicle[]" value="Bike">
+    <label for="vehicle1"> I have a bike</label><br>
+    <input type="checkbox" name="vehicle[]" value="Car">
+    <label for="vehicle2"> I have a car</label><br>
+    <input type="checkbox" name="vehicle[]" value="Boat">
+    <label for="vehicle3"> I have a boat</label>
+    <br><br>
+Image:
+<input type="file"  name="image">
+<br><br>
+<input type="submit" value="Submit"/> 
+<br> 
+</form>  
+
+<script type="text/javascript">
+//   $('#country').on('change', function () {
+//           var country_id = $(this).val();
+//           //alert(country_id);
+//           console.log(country_id);
+//           $.ajax({
+//             url:'url.py',
+//             method:"post",
+//             data:{country:country_id},
+//             success:function(data){
+//                     alert(data)
+//             }
+//           });
+//       });
+
+      $("#country").change(function () {
+        const country_id = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "get_topics_ajax" %}',
+            data: {
+                'country_id': countryid,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `get_topics_ajax` view function
+                let html_data = '<option value="">---------</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.id}">${data.title}</option>`
+                });
+                $("#state").html(html_data); // replace the contents of the topic input with the data that came from the server
+            }
+        });
+    });
+</script>
+</body>  
+</html>  

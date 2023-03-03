@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="static/jquery-3.6.1.min.js"></script>
+    <style>
+        li.current a {
+            color: green;
+        }
+        #pagin li {
+            display: inline-block;
+        }
+        .topright {
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<center>
+    <h2>Display Table</h2>
+</center>
+<body>
+    <form method="get" action="/registration">
+        <input type="submit" name="registration" value="registration">
+    </form>
+    <form method="post" action="/searchresult">
+        <input type="text" class="topright" id="myInput" placeholder="Search.." name="search">
+    </form>
+    <br> 
+    <table id="table" border="5" width="100%">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>fname</th>
+                <th>lname</th>
+                <th>course</th>
+                <th>gender</th>
+                <th>phone</th>
+                <th>country</th>
+                <th>state</th>
+                <th>city</th>
+                <th>address</th>
+                <th>vehical</th>
+                <th>image</th>
+                <th>update</th>
+                <th>delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for i in result %}
+                <td>{{i.id}}</td>
+                <td>{{i.fname}}</td>
+                <td>{{i.lname}}</td>
+                <td>{{i.course}}</td>
+                <td>{{i.gender}}</td>
+                <td>{{i.phone}}</td>
+                <td>{{i.name}}</td>
+                <td>{{i.sname}}</td>
+                <td>{{i.cname}}</td>
+                <td>{{i.address}}</td>
+                <td>{{i.vehicle}}</td>
+                <td>
+                    <img src="{{i.image}}" width="100px" height="100px">
+                </td>
+                <td><a class="btn btn-warning" href="http://localhost:8000/update/{{i.id}}">Edit</a></td>
+
+                <td><a class="btn btnwarning" href="http://localhost:8000/delete/{{i.id}}">delete</a></td>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <ul class="pagination" id="pagin">
+
+    </ul>
+    <input type="hidden" id="page" value="{{resultLen}}">  <!--#===> -->
+
+</body>
+<script>
+    var pageSize = 5;
+    var pageLen=$('#page').val()
+    var pageCount=0;
+    createButton(pageLen)//====
+    function createButton(pageLen){
+        pageCount = Math.ceil(pageLen / pageSize);
+        
+        const element=document.querySelector(".pagination ul");
+
+        function createPagination(pageCount , page){
+            let litag='';
+            if(page>1){
+                litag=`<li><a href="#" class="prev">Prev</a></li>`;
+            }
+        }
+
+        $('#pagin').append('<li class="firstpage"><a href="#"><<</a></li>&nbsp')
+        $('#pagin').append('<li><a href="#" class="prev">Prev</a></li>')
+        for (var i = 0; i < pageCount; i++) {
+            $("#pagin").append('<li class="pageNumber"><a href="#" id="' + (i + 1) + '">' + (i + 1) + '</a></li> ');
+        }
+        $('.prev').hide();
+        $(".firstpage").hide();
+        $('#pagin').append('<li><a href="#" class="next">Next</a></li>')
+        $('#pagin').append('<li class="lastpage"><a href="#">>></a></li>')
+        $("#pagin li.pageNumber").first().addClass("current")
+        showPage(1);
+    }
+    function showPage(page) {
+        $("#page").hide();
+        $("#page").each(function (n) {
+            if (n >= pageSize * (page - 1) && n < pageSize * page)
+                $(this).show();
+        });
+    }
+
+    $('body').on('click','#pagin li.pageNumber',function () {
+        $("#pagin li").removeClass("current");
+        $(this).addClass("current");
+        showPage(parseInt($(this).find('a').text()))
+        var pageId = $(this).find('a').text()//====
+        ajaxFunction(pageId);
+    });
+    function ajaxFunction(pageId) {
+        $('.prev').show();
+        $('.firstpage').show();
+        if (pageId == 1) {
+            $('.prev').hide();
+            $('.firstpage').hide();
+        }
+        else {
+            $('.prev').show();
+            $('.firstpage').show();
+        };
+        if (pageId == pageCount) {
+            $('.next').hide();
+            $('.lastpage').hide();
+        }
+        else {
+            $('.next').show();
+            $('.lastpage').show();
+        };
+        var input=$('#myInput').val().toLowerCase();
+        $.ajax({
+            url: "/getRecords",
+            type: "post",
+            dataType: "json",
+            data: {
+                pageid: pageId,
+                input:input
+            },
+            success: function (result) {
+                let html_data = ''
+                $('table#table > tbody').empty();
+                $.each(result, function (index, value) {
+                    $('table#table > tbody').append('<tr><td>'
+                        + value['id'] + '</td><td>'
+                        + value['fname'] + '</td><td>'
+                        + value['lname'] + '</td><td>'
+                        + value['course'] + '</td><td>'
+                        + value['gender'] + '</td><td>'
+                        + value['phone'] + '</td><td>'
+                        + value['name'] + '</td><td>'
+                        + value['sname'] + '</td><td>'
+                        + value['cname'] + '</td><td>'
+                        + value['address'] + '</td><td>'
+                        + value['vehicle'] + '</td><td><img src=' + value['image'] + ' width="100px" height="100px" ></td><td><a class="btn btn-warning" href="/update/' + value['id'] + '">Edit</a></td><td><a class="btn btnwarning" href="/delete/' + value['id'] + '">delete</a></td></tr>');
+                });
+            }
+        });
+    };
+
+    $('body').on('click','.next',function () {
+        $('#pagin').find('.pageNumber.current').next().addClass('current');
+        $('#pagin').find('.pageNumber.current').prev().removeClass('current');  
+        ajaxFunction($('#pagin').find('.pageNumber.current').text());
+    });
+    $('body').on('click','.prev',function(){
+        $('#pagin').find('.pageNumber.current').prev().addClass('current');
+        $('#pagin').find('.pageNumber.current').next().removeClass('current');
+        ajaxFunction($('#pagin').find('.pageNumber.current').text());
+        searchajaxFunction($('#pagin').find('.pageNumber.current').text())  
+    });
+    $('.firstpage').click(function () {
+        var pageId = 1;
+        $("#pagin li").removeClass("current");
+        $('.pageNumber').find('a[id="1"]').closest('li').addClass("current");
+        ajaxFunction(pageId)
+    });
+    $('.lastpage').click(function () {
+        var pageId = pageCount;
+        $("#pagin li").removeClass("current");
+        $('.pageNumber').find('a[id="' + pageCount + '"]').closest('li').addClass("current");
+        ajaxFunction(pageId)
+    });
+
+    $("#myInput").on("keyup", function () {
+        var input = $(this).val().toLowerCase();
+        $('ul#pagin').empty()
+        if (input !=''){
+            $.ajax({
+                url: "/search",
+                type: "post",
+                dataType:"json",
+                data: { 
+                    input: input 
+                },
+                success: function (data) {
+                    let html_data = '';
+                    pageLen=data['totalCount']
+                    $('ul#pagin').empty()
+                    createButton(pageLen)
+                    $('table#table > tbody').empty();
+                    $.each(data['data'], function (index, value) {
+                        $('table#table > tbody').append('<tr><td>'
+                            + value['id'] + '</td><td>'
+                            + value['fname'] + '</td><td>'
+                            + value['lname'] + '</td><td>'
+                            + value['course'] + '</td><td>'
+                            + value['gender'] + '</td><td>'
+                            + value['phone'] + '</td><td>'
+                            + value['name'] + '</td><td>'
+                            + value['sname'] + '</td><td>'
+                            + value['cname'] + '</td><td>'
+                            + value['address'] + '</td><td>'
+                            + value['vehicle'] + '</td><td><img src=' + value['image'] + ' width="100px" height="100px" ></td><td><a class="btn btn-warning" href="/update/' + value['id'] + '">Edit</a></td><td><a class="btn btnwarning" href="/delete/' + value['id'] + '">delete</a></td></tr>');
+                    });
+                }
+            });
+        }    
+    });
+    
+</script>
+</html>

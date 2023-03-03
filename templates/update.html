@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html> 
+<head>   
+<title>  
+Update Page  
+</title>  
+<script src="/static/jquery-3.6.1.min.js"></script> 
+
+<script type="text/javascript">
+    
+  
+</script>
+</head>  
+<h1>Update Page</h1>
+<body bgcolor="Lightpink" >  
+<br>  
+<br>  
+<form action="/updatestudentdata", method="post", enctype="multipart/form-data" onsubmit="return validateform()">  
+
+<input type="hidden" name="id" value="{{result.id}}"/> <br>
+<label> Firstname </label>         
+<input type="text" name="firstname" value="{{result.fname}}" required/> <br> <br>  
+  
+<label> Lastname: </label>         
+<input type="text" name="lastname" value="{{result.lname}}" required/> <br> <br>  
+  
+<label> Course :  </label>   
+<select name="course" id="course" >    
+<option value=""></option> 
+<option value="BCA" {% if result.course == 'BCA'%} selected {% endif %}>BCA</option>
+<option value="BCA" {% if result.course == 'BBA'%} selected {% endif %}>BCA</option>  
+<option value="B.Tech" {% if result.course == 'B.Tech'%} selected {% endif %}>B.Tech</option>   
+<option value="MBA" {% if result.course == 'MBA'%}  selected {% endif %}>MBA</option>   
+<option value="MCA" {% if result.course == 'MCA'%}  selected {% endif %}>MCA</option>   
+<option value="M.Tech" {% if result.course == 'M.Tech'%} selected {% endif %}>M.Tech</option>
+</select>  
+<br>
+
+<label> Gender : </label><br>    
+  <input type="radio" id="male" name="gender" value="male" {% if result.gender == 'male' %} checked="checked" {% endif %} /> Male<br>  
+  <input type="radio" id="female" name="gender" value="female" {% if result.gender == 'female' %} checked="checked" {% endif %}/> female<br>   
+  <br><br>  
+  
+<label> Phone : </label>     
+<input type="tel" name="phone" maxlength="10" value="{{result.phone}}" /> <br> <br>  
+
+<label> country : </label>
+<select name="country" id="country" > 
+<option>select country</option>
+{% for i in countryData %}  
+ {% if (i.id | string) == result.country %}
+  <option value="{{i.id}}" selected>{{i.name}}</option>
+ {% else %}
+  <option value="{{i.id}}" >{{i.name}}</option>
+  {% endif %}
+{% endfor %}    
+</select>
+<br><br>
+
+<label> state : </label>
+<input type="hidden" name="stateId" value="{{result.state}}">
+<select name="state" id="state" >
+<option value="" name="">select state</option>
+</select>
+<br><br>
+
+<label> city : </label>
+<input type="hidden" name="cityId" value="{{result.city}}">
+<select name="city" id="city" >
+<option value="" name="">select city</option>  
+</select>
+<br><br>
+
+<label>Address : </label> 
+<textarea name="address" >{{result.address}}</textarea> 
+<br>   
+<br><br>
+
+Which vehicle you own:
+  <br>
+  <input type="checkbox" name="vehicle[]" value="Bike" {% if 'Bike' in result.vehicle %} checked {% endif %}> 
+  <label for="vehicle1"> I have a bike</label><br>
+        
+  <input type="checkbox" name="vehicle[]" value="Car" {% if 'Car' in result.vehicle %} checked {% endif %}>
+  <label for="vehicle2"> I have a car</label><br>
+        
+  <input type="checkbox" name="vehicle[]" value="Boat" {% if 'Boat' in result.vehicle %} checked {% endif %}>
+  <label for="vehicle3"> I have a boat</label><br>  
+
+
+Image:
+  <input type="file"  name="image">
+  {% if result.image !='' %}  
+    <img src="{{result.image}}" width="100px" height="100px" >
+  {% endif %}
+    <br><br>
+
+<input type="submit" value="update"/>
+<input type="submit" value="cancle">
+</form>
+
+<script src="/static/common.js"></script>
+<script type="text/javascript">
+        
+</script>
+</body>  
+</html>  

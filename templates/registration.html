@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html> 
+<head>   
+<title>  
+Registration Page  
+</title>  
+<script src="static/jquery-3.6.1.min.js"></script>
+</head>  
+Registration Page
+<body bgcolor="Lightskyblue" >  
+<br>  
+<br>  
+<form name="myForm" action="/createstudent" method="post" enctype="multipart/form-data" onsubmit="return validateform()" >
+    
+<label> Firstname: </label>         
+<input type="text" name="firstname" /> <br> <br>  
+  
+<label> Lastname: </label>         
+<input type="text" name="lastname" /> <br> <br>  
+  
+<label> Course : </label>   
+<select name="course" id="course" >  
+<option value="" name="defualt">default</option>
+<option value="BCA" name="bca">BCA</option>  
+<option value="BBA" name="BBA">BBA</option>  
+<option value="B.Tech" name="b.Tech">B.Tech</option>  
+<option value="MBA">MBA</option>  
+<option value="MCA">MCA</option>  
+<option value="M.Tech">M.Tech</option>  
+</select>  
+<br><br> 
+
+<label> Gender : </label>  
+  <input type="radio" id="male" name="gender" value="male"/> Male   
+  <input type="radio" id="female" name="gender" value="female"/> Female <br><br>     
+  
+<label> Phone : </label>     
+<input type="tel" name="phone" maxlength="10" /> <br> <br>  
+
+<label> Country : </label>
+<select name="country" id="countryId" > 
+<option value="" >Select Country</option>
+{% for i in countryData %} 
+<option value="{{i.id}}">{{i.name}}</option>
+{% endfor %}  
+</select>
+<br><br>
+
+<label> State : </label>
+<select name="state" id="stateId" > 
+<option value="" name="">Select State</option>
+</select>
+<br><br>
+
+<label> City : </label>
+<select name="city" id="cityId" >
+<option value="" name="">Select City</option>
+</select>
+<br><br> 
+
+<label> Address : </label> 
+<textarea name="address" value="address"></textarea> 
+<br><br>  
+
+Which vehicle you own:
+    <br>
+    <input type="checkbox" name="vehicle[]" value="Bike">
+    <label for="vehicle1"> I have a bike</label><br>
+    <input type="checkbox" name="vehicle[]" value="Car">
+    <label for="vehicle2"> I have a car</label><br>
+    <input type="checkbox" name="vehicle[]" value="Boat">
+    <label for="vehicle3"> I have a boat</label>
+    <br><br>
+
+Image:
+<input type="file"  name="image">
+<br><br>
+
+<input type="submit" value="Submit"/> 
+</form>  
+<script src="static/common.js"></script>
+<script type="text/javascript">
+  
+</script>
+</body>  
+</html>   

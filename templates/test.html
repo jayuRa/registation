@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html> 
+<head>   
+<title>  
+Registration Page  
+</title>  
+<script src="static/jquery-3.6.1.min.js"></script>
+<script type="text/javascript">
+
+  function validateform(){
+    var img=document.forms['myForm']['image'];
+    if(img.value!=""){
+        var imgExt=img.value.substring(img.value.lastIndexOf('.')+1);
+        var result=validExt.includes(imgExt);
+        $("#photo").rules?("add",{
+        accept:"jpg|jpeg|png"
+        })
+        return false;
+    }
+}
+</script>
+</head>  
+Registration Page
+<body bgcolor="Lightskyblue" >  
+<br>  
+<br>  
+<form name="myForm" action="/createstudent" method="post" enctype="multipart/form-data" onsubmit="return validateform()" >
+    
+<label> Firstname: </label>         
+<input type="text" name="firstname" /> <br> <br>  
+  
+<label> Lastname: </label>         
+<input type="text" name="lastname" /> <br> <br>  
+  
+<label> Course : </label>   
+<select name="course" id="course" >  
+<option value="" name="defualt">default</option>
+<option value="BCA" name="bca">BCA</option>  
+<option value="BBA" name="BBA">BBA</option>  
+<option value="B.Tech" name="b.Tech">B.Tech</option>  
+<option value="MBA">MBA</option>  
+<option value="MCA">MCA</option>  
+<option value="M.Tech">M.Tech</option>  
+</select>  
+<br><br> 
+
+<label> Gender : </label>  
+  <input type="radio" id="male" name="gender" value="male"/> Male   
+  <input type="radio" id="female" name="gender" value="female"/> Female <br><br>     
+  
+<label> Phone : </label>     
+<input type="tel" name="phone" maxlength="10" /> <br> <br>  
+
+<label> Country : </label>
+<select name="country" id="country" > 
+<option value="" >Select Country</option>
+{% for i in countryData %} 
+<option value="{{i.id}}">{{i.name}}</option>
+{% endfor %}  
+</select>
+<br><br>
+
+<label> State : </label>
+<select name="state" id="state" > 
+<option value="" name="">Select State</option>
+</select>
+<br><br>
+
+<label> City : </label>
+<select name="city" id="city" >
+<option value="" name="">Select City</option>
+</select>
+<br><br> 
+
+<label> Address : </label> 
+<textarea name="address" value="address"></textarea> 
+<br><br>  
+
+Which vehicle you own:
+    <br>
+    <input type="checkbox" name="vehicle[]" value="Bike">
+    <label for="vehicle1"> I have a bike</label><br>
+    <input type="checkbox" name="vehicle[]" value="Car">
+    <label for="vehicle2"> I have a car</label><br>
+    <input type="checkbox" name="vehicle[]" value="Boat">
+    <label for="vehicle3"> I have a boat</label>
+    <br><br>
+
+Image:
+<input type="file"  name="image">
+<br><br>
+
+<input type="submit" value="Submit"/> 
+</form>  
+
+<script type="text/javascript">
+  $('#country').on('change', function () {
+    $('#state').empty()
+    $('#city').empty()
+    var countryId = $(this).val(); 
+    $.ajax({
+      url:'/stateData',
+      method:'post',
+      dataType:'json',
+      data:{countryData:countryId}, 
+      success:function(stateResult){ 
+            let html_data='<option value="">Select State</option>'
+            $.each(stateResult,function(index,value){
+            html_data +='<option value="'+index+'">'+value+'</option>'
+            });
+            $("#state").html(html_data);
+          }
+      });
+  });
+
+  $('#state').on('change', function () {
+    var stateId = $(this).val();
+    $.ajax({
+      url:'/cityData',
+      method:'post',
+      dataType:'json',
+      data:{stateData:stateId}, 
+      success:function(cityResult){
+            let html_data='<option value="">Select State</option>'
+            $.each(cityResult,function(index,value){
+            html_data +='<option value="'+index+'">'+value+'</option>'
+            });
+            $("#city").html(html_data);
+          }
+      });
+  });
+</script>
+</body>  
+</html>   
